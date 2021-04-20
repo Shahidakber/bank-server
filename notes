@@ -1,2 +1,63 @@
 npm init
 npm install express
+
+
+ng g c component name--to create new component
+
+form group
+form control array
+form control name in view of the page
+
+to check condition from view use angular directives.
+*ngif--used to check condition
+*ngswitch--to check multiple condition
+touched
+
+
+to check form valid we use .valid fn
+
+to share data btw components we use sevice
+----------------------------
+ng g service name
+
+
+
+
+create backend using node
+create a folder for server
+
+npm init
+to get node's view we use express----npm install express
+
+main index.js
+
+so create index.js in folder
+import using imports
+app.use then application starts using express
+
+specify the port for the app using listen
+
+------------------------------------------
+
+
+
+
+to test api we use postman
+
+
+to connect mongo with server we use mongoose
+mongoose.connect("localhost//adress")
+
+create model using mongoose
+
+backend=index.js,db.js,data.service.js	
+
+
+
+.then---promise
+.subscribe---observable---accept only status 200
+
+
+----------------------------------------------------
+To get child class component on parent class give selector name of the child in parent view
+

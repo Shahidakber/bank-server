@@ -2,8 +2,17 @@ const { json } = require('express');
 const express = require('express');
 const session = require("express-session")
 const dataservice = require('./services/data.service');
+const cors = require('cors');
+
 
 const app = express();
+app.use(
+ cors({
+     origin:'http://localhost:4200',
+     credentials:true
+      })
+ 
+      )
 app.use(session({
     secret: "randomsecurestring",
     resave: false,
@@ -17,19 +26,19 @@ const logMiddleware = ((req, res, next) => {
 
 app.use(express.json());
 
-app.use(logMiddleware);
+//app.use(logMiddleware);
 
 
 
 const authMiddleware = (req, res, next) => {
-
+  console.log("authmii"+req.session.currentUser);
     if (!req.session.currentUser) {
         return res.json ({
             status: false,
                 statusCode: 404,
                     message: "please login"
         })
-    }
+    }   
     else{
         next()
     }
@@ -48,36 +57,46 @@ app.put('/', (req, res) => {
 
 app.post('/register', (req, res) => {
     // console.log(req.body);
-    const result = dataservice.register(req.body.accno, req.body.name, req.body.password)
-    res.status(result.statusCode)
-    console.log(res.json(result));
+    dataservice.register(req.body.accno, req.body.name, req.body.password).then(result=>{
+    res.status(result.statusCode).json(result)
+    })
+   
 
 })
 
 
 app.post('/login', (req, res) => {
-    //  console.log(req.body);
-    const result = dataservice.login(req, req.body.accno, req.body.password)
-    res.status(result.statusCode)
-    console.log(res.json(result));
+    
+    dataservice.login(req,req.body.accno, req.body.password)
+    .then(result=>{
+        res.status(result.statusCode).json(result)
+        })
 
 })
 
 
-app.post('/deposit',authMiddleware, (req, res) => {
+app.post('/deposit', authMiddleware,(req, res) => {
     //   console.log(req.session.currentUser);
-    const result = dataservice.deposit(req.body.accno, req.body.pswd, req.body.amt)
-    res.status(result.statusCode)
-    console.log(res.json(result));
+    dataservice.deposit(req,req.body.accno, req.body.password, req.body.amt)
+    .then(result=>{
+        res.status(result.statusCode).json(result)
+        })
 
 })
 
-app.post('/withdraw', authMiddleware,(req, res) => {
-    //  console.log(req.body);
-    const result = dataservice.withdraw(req.body.accno, req.body.pswd, req.body.amt)
-    res.status(result.statusCode)
-    console.log(res.json(result));
+app.post('/withdraw',authMiddleware,(req, res) => {
+    
+    dataservice.withdraw(req,req.body.accno, req.body.password, req.body.amt)
+    .then(result=>{
+        res.status(result.statusCode).json(result)
+        })
 
+})
+app.delete('/deleteAccountDetails/:acno', (req, res) => {
+   dataservice.deleteAccountDetails(req.params.acno).then(result=>{
+    res.status(result.statusCode).json(result)
+   })
+    
 })
 
 app.patch('/', (req, res) => {
